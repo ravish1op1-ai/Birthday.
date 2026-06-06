@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday 🎉</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+background: radial-gradient(circle at top,#ff9a9e,#fad0c4,#a18cd1);
+overflow:hidden;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+color:#4b0082;
+}
+
+/* CARD */
+.card{
+background: rgba(255,255,255,0.12);
+backdrop-filter: blur(14px);
+padding:20px;
+border-radius:25px;
+width:92%;
+max-width:520px;
+text-align:center;
+max-height:90vh;
+overflow:auto;
+transition:0.5s;
+box-shadow:0 10px 30px rgba(0,0,0,0.15);
+}
+
+/* LAST PAGE */
+.card.last-page{
+background:#000;
+color:#fff;
+}
+
+/* BUTTON */
+button{
+margin-top:15px;
+padding:12px 18px;
+border:none;
+border-radius:12px;
+background:linear-gradient(45deg,#ff4081,#ff9800);
+color:white;
+cursor:pointer;
+font-size:15px;
+font-weight:600;
+transition:0.3s;
+}
+
+button:hover{
+transform:scale(1.05);
+}
+
+/* PAGES */
+.page{
+display:none;
+opacity:0;
+transition:0.5s;
+}
+
+.page.active{
+display:block;
+opacity:1;
+}
+
+/* TEXT */
+p{
+font-size:18px;
+line-height:1.8;
+margin-top:20px;
+white-space:pre-line;
+}
+
+/* FIREWORKS */
+canvas{
+position:absolute;
+top:0;
+left:0;
+pointer-events:none;
+}
+
+/* BALLOONS */
+.balloon{
+position:absolute;
+width:25px;
+height:35px;
+border-radius:50%;
+animation:floatUp 6s linear infinite;
+}
+
+@keyframes floatUp{
+0%{transform:translateY(100vh);}
+100%{transform:translateY(-120vh);}
+}
+
+/* LOCK SCREEN */
+#lockScreen{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background: linear-gradient(135deg,#1e1e2f,#3a3a6a,#6a4ca3);
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+z-index:999;
+color:white;
+}
+
+.lockBox{
+background: rgba(255,255,255,0.1);
+padding:30px;
+border-radius:20px;
+backdrop-filter: blur(12px);
+text-align:center;
+box-shadow:0 10px 25px rgba(0,0,0,0.3);
+}
+
+input{
+padding:12px;
+border-radius:10px;
+border:none;
+margin-top:10px;
+width:220px;
+font-size:16px;
+outline:none;
+}
+
+/* CAKE */
+#cakeBox{
+font-size:90px;
+cursor:pointer;
+transition:0.4s;
+margin-top:20px;
+}
+
+#cakeBox.cut{
+transform:scale(1.2) rotate(-10deg);
+}
+
+/* WHITE TEXT */
+.whiteText{
+color:white !important;
+}
+
+/* CONFETTI */
+.confetti{
+position:absolute;
+width:8px;
+height:8px;
+top:-10px;
+animation:fall linear forwards;
+}
+
+@keyframes fall{
+to{
+transform:translateY(110vh) rotate(720deg);
+opacity:0;
+}
+}
+
+#secretBox{
+margin-top:15px;
+display:none;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- LOCK SCREEN -->
+<div id="lockScreen">
+<div class="lockBox">
+<h2>🔒 Enter Password</h2>
+<input type="password" id="pass" placeholder="Enter password">
+<br>
+<button onclick="checkPass()">Unlock</button>
+</div>
+</div>
+
+<!-- MUSIC -->
+<audio id="song" loop>
+<source src="https://cdn.pixabay.com/audio/2021/11/23/audio_3c1a0a9cfa.mp3">
+</audio>
+
+<!-- FIREWORKS -->
+<canvas id="fireworks"></canvas>
+
+<!-- MAIN CARD -->
+<div class="card" id="mainCard">
+
+<button id="musicBtn" onclick="playMusic()" style="display:none;">▶️ Play Music</button>
+
+<div class="page active" id="p1">
+<p id="text1"></p>
+<button onclick="next(1)">Next ➡</button>
+</div>
+
+<div class="page" id="p2">
+<p id="text2"></p>
+<button onclick="next(2)">Next ➡</button>
+</div>
+
+<div class="page" id="p3">
+<p id="text3"></p>
+<button onclick="next(3)">Next ➡</button>
+</div>
+
+<div class="page" id="p4">
+<p id="text4"></p>
+<button onclick="next(4)">Final Page ✨</button>
+</div>
+
+<div class="page" id="p5">
+
+<div id="cakeBox" onclick="cutCake()">🎂
+<p style="font-size:12px;" class="whiteText">Tap to cut cake ✂️</p>
+</div>
+
+<div id="secretBox">
+<button onclick="showSecretMsg()">💌 Secret Message</button>
+</div>
+
+<p id="text5" class="whiteText"></p>
+
+</div>
+
+</div>
+
+<script>
+
+// PASSWORD
+function checkPass(){
+let p=document.getElementById('pass').value;
+
+if(p==='6/4/26'){
+document.getElementById('lockScreen').style.display='none';
+document.getElementById('musicBtn').style.display='block';
+typeText('text1', messages[0]);
+}else{
+alert('Wrong Password!');
+}
+}
+
+// MUSIC
+function playMusic(){
+document.getElementById('song').play();
+}
+
+// MESSAGES (UNCHANGED)
+const messages = [
+
+`Happy Birthday Devi Ji 🎂✨
+
+Aaj ka din ek bohot special insan ke naam…
+Jo hamesha smile karti rahein, khush rahein aur life me bohot aage badhein 💛
+Sach me aapki positive vibe aur nature dono hi kaafi achhe hain ✨
+Aur honestly, aap jaisi hain waise hi hamesha rehiyega… because that’s what makes you different 😊`,
+
+`Pata nahi humari kitni memories bani hain…
+Par jitni bhi bani hain, honestly sab kaafi achhi aur memorable hain 😊
+Aapse baat karke hamesha ek alag hi achha feel aata hai ✨
+Bas aaj ke din itna bolna tha — please hamesha aise hi rehiyega 🌸
+Kyunki aapki vibe genuinely bohot rare hai 💛`,
+
+`Sach bolu to…
+Aap un logon me se hain jinke saath thodi si bhi baat ho jaye na,
+to mood automatically better ho jata hai 😊
+Shayad aapki baaton me hi kuch alag sa hai ✨
+Aur honestly, aajkal aise genuine log bahut kam milte hain 💛`,
+
+`Once Again Happy Birthday 🎉💛
+May your life be filled with happiness, peace, success
+aur bohot saari pyari smiles ✨
+Aur aaj ka din aapke liye utna hi beautiful ho
+jitni aapki vibe aur personality hai 🌸
+Enjoy your special day… and keep smiling always 😊`,
+
+`Chaliye ab officially cake cut kijiye 🎂✨
+Aur dil se wish kijiye ki aapki har chhoti-badi wish puri ho 💫
+Aur haan…
+aapki smile hamesha aisi hi bani rehni chahiye 😊💛
+Enjoy your special day 🌸`
+];
+
+// TYPE EFFECT
+function typeText(id,text){
+let i=0;
+document.getElementById(id).innerHTML="";
+
+function typing(){
+if(i<text.length){
+document.getElementById(id).innerHTML+=text.charAt(i);
+i++;
+setTimeout(typing,25);
+}
+}
+typing();
+}
+
+// NEXT PAGE
+function next(n){
+
+document.getElementById('p'+n).classList.remove('active');
+document.getElementById('p'+(n+1)).classList.add('active');
+
+typeText('text'+(n+1),messages[n]);
+}
+
+// 🎊 CONFETTI
+function confettiBlast(){
+for(let i=0;i<100;i++){
+let c=document.createElement("div");
+c.className="confetti";
+c.style.left=Math.random()*100+"vw";
+c.style.background=["red","blue","yellow","pink","purple","green"][Math.floor(Math.random()*6)];
+c.style.animationDuration=(2+Math.random()*3)+"s";
+
+document.body.appendChild(c);
+setTimeout(()=>c.remove(),5000);
+}
+}
+
+// CAKE CUT
+function cutCake(){
+
+let cake=document.getElementById('cakeBox');
+cake.classList.add('cut');
+cake.innerHTML="🍰";
+
+startBalloons();
+startFireworks();
+confettiBlast();
+
+// show secret button ONLY AFTER cake cut
+document.getElementById("secretBox").style.display="block";
+}
+
+// SECRET MESSAGE CLICK
+function showSecretMsg(){
+alert("💌 Thank you for existing ✨\nYou are truly special 💛");
+}
+
+// BALLOONS
+function startBalloons(){
+for(let i=0;i<20;i++){
+let b=document.createElement('div');
+b.className='balloon';
+b.style.left=Math.random()*100+'vw';
+b.style.background=['red','blue','green','yellow','purple','pink'][Math.floor(Math.random()*6)];
+document.body.appendChild(b);
+setTimeout(()=>b.remove(),6000);
+}
+}
+
+// FIREWORKS
+const canvas=document.getElementById('fireworks');
+const ctx=canvas.getContext('2d');
+
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let particles=[];
+let fireStarted=false;
+
+function createFirework(){
+let x=Math.random()*canvas.width;
+let y=Math.random()*canvas.height/2;
+
+for(let i=0;i<60;i++){
+let angle=Math.random()*Math.PI*2;
+let speed=Math.random()*6;
+
+particles.push({
+x,y,
+vx:Math.cos(angle)*speed,
+vy:Math.sin(angle)*speed,
+alpha:1
+});
+}
+}
+
+function animate(){
+ctx.fillStyle='rgba(0,0,0,0.15)';
+ctx.fillRect(0,0,canvas.width,canvas.height);
+
+particles.forEach((p,i)=>{
+p.vy+=0.05;
+p.x+=p.vx;
+p.y+=p.vy;
+p.alpha-=0.01;
+
+ctx.fillStyle='rgba(255,255,255,'+p.alpha+')';
+ctx.fillRect(p.x,p.y,2,2);
+
+if(p.alpha<=0) particles.splice(i,1);
+});
+
+requestAnimationFrame(animate);
+}
+
+function startFireworks(){
+if(fireStarted) return;
+fireStarted=true;
+setInterval(createFirework,800);
+animate();
+}
+
+</script>
+
+</body>
+</html>
